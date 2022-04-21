@@ -1,0 +1,26 @@
+program:
+    'storing userdata'
+        userdata = user
+    'done storing'
+
+    'i consumed'
+        foods *= food
+    'these macros'
+;
+
+user:
+    'userdata' height=INT ',' weight=INT ',' user_goal = goal ',' gymgoer = answer
+;
+
+answer:
+    'yes' | 'no'
+;
+
+goal:
+    "deficit" | "maintenance" | "surplus"
+;
+
+food:
+    "food" calories=INT 'calories,' protein=INT 'protein,' carbs=INT 'carbs,' fat=INT "fat"
+;
+
