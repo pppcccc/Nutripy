@@ -11,6 +11,12 @@ remaining_info = {}
 user_info = {}
 goal_info = {}
 
+def print_stats():
+    print(f"Data for a {user_info['weight']} pound person who is {user_info['height']} inches tall.\n")
+    print(f"Daily Macronutrient Goals:\n{goal_info['calories']} calories\n{goal_info['protein']}g protein\n{goal_info['carbs']}g carbs\n{goal_info['fat']}g fat\n")
+    print(f"Consumed Today:\n{eaten_info['calories']} calories\n{eaten_info['protein']}g protein\n{eaten_info['carbs']}g carbs\n{eaten_info['fat']}g fat\n")
+    print(f"Remaining Today:\n{remaining_info['calories']} calories\n{remaining_info['protein']}g protein\n{remaining_info['carbs']}g carbs\n{remaining_info['fat']}g fat\n")
+
 
 def parse_model(model, file):
     user_info['weight']  = model.userdata.weight
@@ -158,3 +164,4 @@ if __name__ == "__main__":
     filename = 'eaten.json'
     read_json(filename)
     parse_model(nutripy_model, filename)
+    print_stats()
