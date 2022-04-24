@@ -1,5 +1,7 @@
 import json
 import time
+import sys
+from datetime import date
 from textx import metamodel_from_file
 
 nutripy_mm = metamodel_from_file('nutripy.tx')
@@ -10,6 +12,7 @@ eaten_info = {}
 remaining_info = {}
 user_info = {}
 goal_info = {}
+
 
 def print_stats():
     print(f"Data for a {user_info['weight']} pound person who is {user_info['height']} inches tall.\n")
@@ -26,31 +29,19 @@ def parse_model(model, file):
     goal_info['calories'] = calculate_calories(user_info['weight'], user_info['goal'])
     remaining_info['calories'] = goal_info['calories'] if remaining_info['calories'] == 0  else remaining_info['calories']
 
-    if user_info['gymgoer'] == 'yes':
-        goal_info['protein'] = 1 * user_info['weight']
-        goal_info['carbs'] = 1.2 * user_info['weight']
-        # carbs & protein are 4 cal per gram
-        result = goal_info['calories'] - (goal_info['protein'] + goal_info['carbs'])*4
-        # fat is 9 calories per gram, round to 2 decimal places
-        result = int(round(result/9, 2))
-        goal_info['fat'] = result
+    protein_amt = 1 if user_info['gymgoer'] == 'yes' else 0.5
+    carbs_amt = 1.2 if user_info['gymgoer'] == 'yes' else 1.7
+    goal_info['protein'] = protein_amt * user_info['weight']
+    goal_info['carbs'] = carbs_amt * user_info['weight']
+    # carbs & protein are 4 cal per gram
+    result = goal_info['calories'] - (goal_info['protein'] + goal_info['carbs'])*4
+    # fat is 9 calories per gram, round to 2 decimal places
+    result = int(round(result/9, 2))
+    goal_info['fat'] = result
 
-        remaining_info['protein'] = goal_info['protein'] if remaining_info['protein'] == 0  else remaining_info['protein']
-        remaining_info['carbs'] = goal_info['carbs'] if remaining_info['carbs'] == 0  else remaining_info['carbs']
-        remaining_info['fat'] = goal_info['fat'] if remaining_info['fat'] == 0  else remaining_info['fat']
-
-    else:
-        goal_info['protein'] = 0.5 * user_info['weight']
-        goal_info['carbs'] = 1.7 * user_info['weight']
-        # carbs & protein are 4 cal per gram
-        result = goal_info['calories'] - (goal_info['protein'] + goal_info['carbs'])*4
-        # fat is 9 calories per gram, round to 2 decimal places
-        result = int(round(result/9, 2))
-        goal_info['fat'] = result
-
-        remaining_info['protein'] = goal_info['protein'] if remaining_info['protein'] == 0  else remaining_info['protein']
-        remaining_info['carbs'] = goal_info['carbs'] if remaining_info['carbs'] == 0  else remaining_info['carbs']
-        remaining_info['fat'] = goal_info['fat'] if remaining_info['fat'] == 0  else remaining_info['fat']
+    remaining_info['protein'] = goal_info['protein'] if remaining_info['protein'] == 0  else remaining_info['protein']
+    remaining_info['carbs'] = goal_info['carbs'] if remaining_info['carbs'] == 0  else remaining_info['carbs']
+    remaining_info['fat'] = goal_info['fat'] if remaining_info['fat'] == 0  else remaining_info['fat']
 
     for food in model.foods:
         eaten_info['calories'] += food.calories
@@ -66,6 +57,28 @@ def parse_model(model, file):
 
     write_json(file)
     
+
+def calculate_calories(weight, goal):
+    if goal == 'deficit':
+        if 0 < weight:
+            formula = weight * 12
+            return formula
+        else:
+            raise Exception("weight can not be lower than 0")
+
+    elif goal == 'surplus':
+        if 0 < weight:
+            formula = weight * 18
+            return formula 
+        else:
+            raise Exception("weight can not be lower than 0")
+    else:
+        if 0 < weight:
+            formula = weight * 15
+            return formula
+        else:
+            raise Exception("weight can not be lower than 0")
+
 
 def read_json(file):
     global eaten_info
@@ -110,7 +123,7 @@ def read_json(file):
             }
         }
 
-        with open('eaten.json', 'w', encoding='utf-8') as f:
+        with open(file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
         eaten_info = data['eaten']
@@ -131,37 +144,24 @@ def write_json(file):
             "eaten": eaten_info,
             "remaining": remaining_info
         }
-        with open('eaten.json', 'w', encoding='utf-8') as f:
+        with open(file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     except Exception as err:
         print(f'ran into an error loading json \n{err}')
 
 
-def calculate_calories(weight, goal):
-    if goal == 'deficit':
-        if 0 < weight:
-            formula = weight * 12
-            return formula
-        else:
-            raise Exception("weight can not be lower than 0")
-
-    elif goal == 'surplus':
-        if 0 < weight:
-            formula = weight * 18
-            return formula 
-        else:
-            raise Exception("weight can not be lower than 0")
-    else:
-        if 0 < weight:
-            formula = weight * 15
-            return formula
-        else:
-            raise Exception("weight can not be lower than 0")
-
-
 if __name__ == "__main__":
-    filename = 'eaten.json'
-    read_json(filename)
-    parse_model(nutripy_model, filename)
-    print_stats()
+    operation = sys.argv[1] if len(sys.argv) > 1 else None
+    filename = sys.argv[2] if len(sys.argv) > 2 else f'{date.today()}.json'
+    if operation == 'add':
+        read_json(filename)
+        parse_model(nutripy_model, filename)
+        print_stats()
+
+    elif operation == 'display':
+        read_json(filename)
+        print_stats()
+
+    else:
+        print('Please enter an argument (add/display).\nFormat: python nutripy.py {add/display} {json file/no file = today}')
