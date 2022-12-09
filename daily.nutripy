@@ -1,7 +1,11 @@
 storing userdata
-userdata 75, 215, deficit, yes
+gender: male, age: 21, height: 72 inches, weight: 175 lbs, goal: maintenance, activity: 0, nutrition split: 25/55/20
 done storing
 
 i consumed
-food 690 calories, 70 protein, 65 carbs, 17 fat
+food 1/2/3/4
 these macros
+
+database start
+minute_white_rice/125 g/200/4/39/2.5
+database end 
