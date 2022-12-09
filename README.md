@@ -4,7 +4,7 @@ Nutripy supports adding calories and macronutrients specified in a .nutripy file
 Dependencies needed: textx, datetime
 
 There are currently 4 ways to use nutripy:
-Format 1: python nutripy.py add {json file/no file = today}
-Format 2: python nutripy.py display {json file/no file = today}
-Format 3: python nutripy.py calculate weightloss {desired weight} {current weight} {caloric deficit}
-Format 4: python nutripy.py calculate fatloss {desired body fat} {current body fat} {current weight} {caloric deficit}
+1. python nutripy.py add {json file/no file = today}
+2. python nutripy.py display {json file/no file = today}
+3. python nutripy.py calculate weightloss {desired weight} {current weight} {caloric deficit}
+4. python nutripy.py calculate fatloss {desired body fat} {current body fat} {current weight} {caloric deficit}
