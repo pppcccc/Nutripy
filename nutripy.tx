@@ -6,14 +6,18 @@ program:
     'i consumed'
         foods *= food
     'these macros'
+
+    'database start'
+        macros *= macro
+    'database end'     
 ;
 
 user:
-    'userdata' height=INT ',' weight=INT ',' user_goal = goal ',' gymgoer = answer
+    'gender: ' user_gender=gender ', age: ' age=NUMBER ', height: ' height=NUMBER 'inches, weight: ' weight=NUMBER 'lbs, goal: ' user_goal = goal ', activity: ' activity = INT ', nutrition split: ' split = nutrition
 ;
 
-answer:
-    'yes' | 'no'
+gender:
+    'male' | 'female'
 ;
 
 goal:
@@ -21,6 +25,17 @@ goal:
 ;
 
 food:
-    "food" calories=INT 'calories,' protein=INT 'protein,' carbs=INT 'carbs,' fat=INT "fat"
+    (("food" calories=NUMBER '/' protein=NUMBER '/' carbs=NUMBER '/' fat=NUMBER) | ("food" food_name=ID "/" ((grams_weight=NUMBER 'g') | (oz_weight=NUMBER 'oz'))))
 ;
 
+weight:
+    weight=NUMBER ("oz" | "g")?
+;
+
+macro:
+    foodname=ID "/" ((grams_weight=NUMBER 'g')? | (oz_weight=NUMBER 'oz')?) "/" calories=NUMBER '/' protein=NUMBER '/' carbs=NUMBER '/' fat=NUMBER
+;
+
+nutrition:
+    n_protein=INT '/' n_carbs=INT '/' n_fat=INT
+;
