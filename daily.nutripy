@@ -4,8 +4,13 @@ done storing
 
 i consumed
 food 1/2/3/4
+food minute_white_rice/250 g
+food minute_white_rice/10 oz
+food potato/10 g
+food potato/2 oz
 these macros
 
 database start
 minute_white_rice/125 g/200/4/39/2.5
+potato/1 oz/1/2/3/4
 database end 
